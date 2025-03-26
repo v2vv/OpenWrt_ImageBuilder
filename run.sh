@@ -84,7 +84,7 @@ services:
     container_name: imagebuilder
     environment:
       - PROFILE=$PROFILE
-      - USE_MIRROR=$USE_MIRROR
+      # - USE_MIRROR=$USE_MIRROR
       # - MIRROR=$MIRROR
     env_file:
       - ./.env
