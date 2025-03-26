@@ -85,7 +85,7 @@ services:
     environment:
       - PROFILE=$PROFILE
       - USE_MIRROR=$USE_MIRROR
-      - MIRROR=$MIRROR
+      # - MIRROR=$MIRROR
     env_file:
       - ./.env
     volumes:
