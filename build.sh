@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
+make info
 default_modules="add-all-device-to-lan add-feed-key add-feed ib argon base opkg-mirror prefer-ipv6-settings statistics system tools"
 
 LOG() {
