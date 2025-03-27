@@ -69,7 +69,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64  # 指定架构（根据 OpenWrt 目标平台调整）
+          platforms: linux/arm  # 指定架构（根据 OpenWrt 目标平台调整）
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/openwrt:latest
           push: true
