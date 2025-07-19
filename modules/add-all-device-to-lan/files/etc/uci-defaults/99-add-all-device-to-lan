@@ -1,11 +1,15 @@
 wan_device=$(uci get network.wan.device)
-all_devices=$(ip link show | grep -o "eth[0-9]\+")
-all_devices=$(echo $all_devices | sed "s/$wan_device//g")
+all_devices=$(ip -o link show | awk -F': ' '{print $2}' | grep "^eth")
 
-uci delete network.@device[0].ports
+# 删除 wan_device
+all_devices=$(echo "$all_devices" | tr ' ' '\n' | grep -v "^$wan_device$" | xargs)
 
+# 清空旧端口
+uci -q delete network.lan.ports
+
+# 重新添加剩余设备
 for device in $all_devices; do
-    uci add_list network.@device[0].ports=$device
+    uci add_list network.lan.ports=$device
 done
 
 uci commit network
