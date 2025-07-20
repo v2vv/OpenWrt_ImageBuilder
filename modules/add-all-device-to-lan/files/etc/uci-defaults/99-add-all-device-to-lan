@@ -1,6 +1,6 @@
-wan_device=$(uci get network.wan.device)
+lan_device=$(uci get network.lan.device)
 all_devices=$(ip link show | grep -o "eth[0-9]\+")
-all_devices=$(echo $all_devices | sed "s/$wan_device//g")
+all_devices=$(echo $all_devices | sed "s/$lan_device//g")
 
 uci delete network.@device[0].ports
 
