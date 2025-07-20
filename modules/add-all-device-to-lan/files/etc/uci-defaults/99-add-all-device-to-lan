@@ -1,42 +1,12 @@
+wan_device=$(uci get network.wan.device)
+all_devices=$(ip link show | grep -o "eth[0-9]\+")
+all_devices=$(echo $all_devices | sed "s/$wan_device//g")
 
-# 获取 WAN 设备
-wan_device=$(uci get network.wan.device 2>/dev/null)
-if [ -z "$wan_device" ]; then
-    # 如果 network.wan.device 没有设置，尝试从 ifname 中获取
-    wan_device=$(uci get network.wan.ifname 2>/dev/null)
-fi
+uci delete network.@device[0].ports
 
-# 获取所有 eth 设备
-all_devices=$(ip -o link show | awk -F': ' '{print $2}' | grep "^eth")
-
-# 如果 wan_device 存在，则排除
-if [ -n "$wan_device" ]; then
-    all_devices=$(echo "$all_devices" | grep -v "^$wan_device$")
-fi
-
-# 如果没有找到 LAN 设备，直接退出
-if [ -z "$all_devices" ]; then
-    echo "未找到可用的 LAN 设备"
-    exit 1
-fi
-
-# 清空 lan.ports（如果 lan 不存在则自动创建）
-uci -q delete network.lan.ports
-if [ -z "$(uci show network.lan 2>/dev/null)" ]; then
-    echo "未找到 network.lan，创建 lan 接口"
-    uci set network.lan=interface
-    uci set network.lan.proto='static'
-    uci set network.lan.ipaddr='192.168.1.1'
-    uci set network.lan.netmask='255.255.255.0'
-fi
-
-# 添加剩余设备到 LAN
 for device in $all_devices; do
-    uci add_list network.lan.ports="$device"
+    uci add_list network.@device[0].ports=$device
 done
 
 uci commit network
 /etc/init.d/network restart
-
-echo "WAN 设备: $wan_device"
-echo "LAN 设备: $all_devices"
