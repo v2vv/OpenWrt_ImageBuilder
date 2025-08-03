@@ -1,8 +1,8 @@
 
 uci batch << EOF
 
-set network.lan.gateway='$LAN_GATEWAY'
 set network.lan.ipaddr='$LAN_IP'
+set network.lan.gateway='$LAN_GATEWAY'
 
 commit
 EOF
